@@ -1,43 +1,3 @@
-import random
-
-verbose = False
-
-
-class Player:
-    def __init__(self, name, type, number):
-        self.name = name
-        self.type = type
-        self.number = number
-
-    def is_human(self):
-        return self.type == 'human'
-
-    def get_move(self, valid_moves):
-        if self.is_human():
-            return self.get_move_human(valid_moves)
-        else:
-            return self.get_move_computer(valid_moves)
-
-    def get_move_computer(self, valid_moves):
-        is_move_valid = False
-        while not is_move_valid:
-            move = random.randint(0, 23)
-            if move in valid_moves:
-                is_move_valid = True
-        return move
-
-    def get_move_human(self, player, valid_moves):
-        is_move_valid = False
-        while not is_move_valid:
-            print('Player', player, 'please enter location to MOVE to:')
-            user_input = input()
-            if len(user_input) > 0:
-                move = ord(user_input[0]) - ord('A')
-                if 0 <= move <= 23 and move in valid_moves:
-                    is_move_valid = True
-        return move
-
-
 class NineMenGame:
     rows = [(0, 1, 2),
             (3, 4, 5),
@@ -118,7 +78,7 @@ class NineMenGame:
 
     def make_move(self):
         valid_moves = []
-        while valid_moves == []:
+        while not valid_moves:
             stone = self.players[self.current_player() - 1].get_move(self.get_stones(self.current_player()))
             valid_moves = self.get_valid_moves([stone])
         move = self.players[self.current_player() - 1].get_move(valid_moves)
@@ -169,44 +129,4 @@ class NineMenGame:
         num_moves = len(moves)
         return num_stones < 3 or num_moves == 0
 
-def play_game(player1, player2):
-    game = NineMenGame(player1, player2)
-    state_list = []
-    while game.num_stones_to_play[game.player_to_move] > 0:
-        if verbose:
-            game.display_board()
-        game.place_piece()
-        state_list.append(game.get_state_num())
-    while not game.has_lost():
-        if verbose:
-            game.display_board()
-        game.make_move()
-        state_list.append(game.get_state_num())
-    print('Player', game.current_opponent(), 'has won!!! (game took', len(state_list), 'moves.)')
-    winner = game.current_opponent()
-    return winner, state_list
 
-
-def print_to_file(winner, state_list, file):
-    with open(file, 'a') as f:
-        for state in state_list:
-            f.write(str(state) + ' ' +
-                    # str(state.num_stones_to_play) + ' ' +
-                    str(winner) + '\n')
-
-
-file = "output.txt"
-print("Let's Play")
-prediction = dict()
-p1 = Player('Brian', 'state', 1)
-p2 = Player('Dani', 'state', 2)
-for _ in range(100):
-    winner, state_list = play_game(p1, p2)
-    print_to_file(winner, state_list, file)
-    for state in state_list:
-        if state in prediction:
-            val, count = prediction[state]
-            prediction[state] = (val * count + winner) / (count + 1), count + 1
-        else:
-            prediction[state] = (winner, 1)
-print("All Done")
