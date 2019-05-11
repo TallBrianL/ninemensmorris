@@ -1,7 +1,7 @@
 import player
 import game
 
-verbose = False
+verbose = True
 
 
 def play_game(player1, player2):
@@ -34,9 +34,9 @@ def run_many_games():
     file = "output.txt"
     print("Let's Play")
     prediction = dict()
-    p1 = player.Player('Brian', 'state', 1)
-    p2 = player.Player('Dani', 'state', 2)
+    p1 = player.Player('Brian', 'computer', 1, prediction)
     for _ in range(100):
+        p2 = player.Player('Dani', 'computer', 2, prediction)
         winner, state_list = play_game(p1, p2)
         print_to_file(file, state_list, winner)
         for state in state_list:

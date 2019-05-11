@@ -1,4 +1,15 @@
+import random
+
+
 class NineMenGame:
+    board_ref = '''A --- B --- C
+| D - E - F |
+| | G H I | |
+J K L   M N O
+| | P Q R | |
+| S - T - U |
+V --- W --- X'''
+
     rows = [(0, 1, 2),
             (3, 4, 5),
             (6, 7, 8),
@@ -22,6 +33,7 @@ class NineMenGame:
         self.player_to_move = 0
         self.players = (p1, p2)
         self.num_stones_to_play = [9, 9]
+        print(self.board_ref)
 
     def get_state_num(self):
         board_state = sum([x**3 * y for x, y in enumerate(self.board)])
@@ -60,7 +72,7 @@ class NineMenGame:
         return int((self.player_to_move ^ 1) + 1)
 
     def capture_piece(self):
-        move = self.players[self.current_player() - 1].get_move(self.get_stones(self.current_opponent()))
+        move = self.get_move('Capture', self.players[self.current_player() - 1], self.get_stone_locations(self.current_opponent()))
         # print('====PLAYER', self.current_player(), 'captures piece', move, '!====')
         self.board[move] = 0
 
@@ -69,7 +81,8 @@ class NineMenGame:
         return self.is_triple_match(self.rows[row]) or self.is_triple_match(self.cols[col])
 
     def place_piece(self):
-        move = self.players[self.current_player() - 1].get_move(self.get_open_locations())
+        self.display_board()
+        move = self.get_move('Place', self.players[self.current_player() - 1], self.get_open_locations())
         self.board[move] = self.current_player()
         if self.new_line_created(move):
             self.capture_piece()
@@ -79,9 +92,11 @@ class NineMenGame:
     def make_move(self):
         valid_moves = []
         while not valid_moves:
-            stone = self.players[self.current_player() - 1].get_move(self.get_stones(self.current_player()))
+            stone = self.get_move('location of piece to move',
+                                  self.players[self.current_player() - 1],
+                                  self.get_stone_locations(self.current_player()))
             valid_moves = self.get_valid_moves([stone])
-        move = self.players[self.current_player() - 1].get_move(valid_moves)
+        move = self.players[self.current_player() - 1].get_move('location to move to', valid_moves)
         self.board[move] = self.current_player()
         self.board[stone] = 0
         if self.new_line_created(move):
@@ -89,9 +104,11 @@ class NineMenGame:
         # print('Player', self.current_player(), 'moved from', stone, 'to', move, '.')
         self.player_to_move = self.player_to_move ^ 1
 
-    def get_stones(self, player):
+    # Returns the indices of board locations of player's stones
+    def get_stone_locations(self, player):
         return [x[0] for x in enumerate(self.board) if x[1] == player]
 
+    # Returns the indices of empty board locations
     def get_open_locations(self):
         return [x[0] for x in enumerate(self.board) if x[1] == 0]
 
@@ -110,9 +127,9 @@ class NineMenGame:
 
     def get_valid_moves(self, stones=None):
         moves = set()
-        if len(self.get_stones(self.current_player())) > 3:
+        if len(self.get_stone_locations(self.current_player())) > 3:
             if stones is None:
-                stones = self.get_stones(self.current_player())
+                stones = self.get_stone_locations(self.current_player())
             for stone in stones:
                 row, col = self.find_row_and_col(stone)
                 moves |= self.get_moves(self.rows[row], stone)
@@ -123,10 +140,38 @@ class NineMenGame:
         return valid_moves
 
     def has_lost(self):
-        stones = self.get_stones(self.current_player())
+        stones = self.get_stone_locations(self.current_player())
         num_stones = len(stones)
         moves = self.get_valid_moves()
         num_moves = len(moves)
         return num_stones < 3 or num_moves == 0
 
+    def get_move(self, type, player, valid_moves):
+        if player.is_human():
+            return self.get_move_human(type, player, valid_moves)
+        else:
+            return self.get_move_computer(player, valid_moves, state)
 
+    @staticmethod
+    def get_move_computer(player, valid_moves, state):
+        is_move_valid = False
+        while not is_move_valid:
+            if not player.type == 'learning':
+                move = random.randint(0, 23)
+            else:
+                move = player.prediction(state)
+            if move in valid_moves:
+                is_move_valid = True
+        return move
+
+    @staticmethod
+    def get_move_human(type, player, valid_moves):
+        is_move_valid = False
+        while not is_move_valid:
+            print(player.name, 'Please enter location to ' + type + ':')
+            user_input = input()
+            if len(user_input) > 0:
+                move = ord(user_input[0]) - ord('A')
+                if 0 <= move <= 23 and move in valid_moves:
+                    is_move_valid = True
+        return move
