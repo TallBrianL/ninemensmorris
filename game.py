@@ -33,7 +33,7 @@ V --- W --- X'''
         self.player_to_move = 0
         self.players = (p1, p2)
         self.num_stones_to_play = [9, 9]
-        print(self.board_ref)
+        # print(self.board_ref)
 
     def get_state_num(self):
         board_state = sum([x**3 * y for x, y in enumerate(self.board)])
@@ -72,7 +72,7 @@ V --- W --- X'''
         return int((self.player_to_move ^ 1) + 1)
 
     def capture_piece(self):
-        move = self.get_move('Capture', self.players[self.current_player() - 1], self.get_stone_locations(self.current_opponent()))
+        move = self.select_move(self.get_stone_locations(self.current_opponent()))
         # print('====PLAYER', self.current_player(), 'captures piece', move, '!====')
         self.board[move] = 0
 
@@ -81,8 +81,8 @@ V --- W --- X'''
         return self.is_triple_match(self.rows[row]) or self.is_triple_match(self.cols[col])
 
     def place_piece(self):
-        self.display_board()
-        move = self.get_move('Place', self.players[self.current_player() - 1], self.get_open_locations())
+        #self.display_board()
+        move = self.select_move(self.get_open_locations())
         self.board[move] = self.current_player()
         if self.new_line_created(move):
             self.capture_piece()
@@ -90,19 +90,18 @@ V --- W --- X'''
         self.player_to_move ^= 1
 
     def make_move(self):
-        valid_moves = []
-        while not valid_moves:
-            stone = self.get_move('location of piece to move',
-                                  self.players[self.current_player() - 1],
-                                  self.get_stone_locations(self.current_player()))
-            valid_moves = self.get_valid_moves([stone])
-        move = self.players[self.current_player() - 1].get_move('location to move to', valid_moves)
-        self.board[move] = self.current_player()
-        self.board[stone] = 0
-        if self.new_line_created(move):
+        if self.has_less_than_3_stones():
+            return False
+        valid_moves = self.get_valid_moves()
+        if not valid_moves:
+            return False
+        move = self.select_move(valid_moves)
+        self.board[move[1]] = self.current_player()
+        self.board[move[0]] = 0
+        if self.new_line_created(move[1]):
             self.capture_piece()
-        # print('Player', self.current_player(), 'moved from', stone, 'to', move, '.')
         self.player_to_move = self.player_to_move ^ 1
+        return True
 
     # Returns the indices of board locations of player's stones
     def get_stone_locations(self, player):
@@ -111,6 +110,13 @@ V --- W --- X'''
     # Returns the indices of empty board locations
     def get_open_locations(self):
         return [x[0] for x in enumerate(self.board) if x[1] == 0]
+
+    def get_all_moves_for_a_stone(self, stone):
+        moves = set()
+        row, col = self.find_row_and_col(stone)
+        moves |= self.get_moves(self.rows[row], stone)
+        moves |= self.get_moves(self.cols[col], stone)
+        return moves
 
     @staticmethod
     def get_moves(positions, stone):
@@ -125,47 +131,50 @@ V --- W --- X'''
             moves.add(positions[1])
         return moves
 
-    def get_valid_moves(self, stones=None):
-        moves = set()
-        if len(self.get_stone_locations(self.current_player())) > 3:
-            if stones is None:
-                stones = self.get_stone_locations(self.current_player())
+    def get_valid_moves(self):
+        stones = self.get_stone_locations(self.current_player())
+
+        if len(stones) > 3:
+            # Regular movement phase
+            valid_moves = set()
             for stone in stones:
-                row, col = self.find_row_and_col(stone)
-                moves |= self.get_moves(self.rows[row], stone)
-                moves |= self.get_moves(self.cols[col], stone)
-            valid_moves = [move for move in moves if self.board[move] == 0]
+                for move in self.get_all_moves_for_a_stone(stone):
+                    if self.board[move] == 0:
+                        valid_moves.add((stone, move))
         else:
-            valid_moves = self.get_open_locations()
+            # Flying Dutchmen Phase
+            valid_moves = [(stone, move) for move in self.get_open_locations() for stone in stones]
         return valid_moves
 
-    def has_lost(self):
+    def has_less_than_3_stones(self):
         stones = self.get_stone_locations(self.current_player())
         num_stones = len(stones)
-        moves = self.get_valid_moves()
-        num_moves = len(moves)
-        return num_stones < 3 or num_moves == 0
+        return num_stones < 3
 
-    def get_move(self, type, player, valid_moves):
+    def select_move(self, valid_moves):
+        player = self.players[self.current_player() - 1]
         if player.is_human():
             return self.get_move_human(type, player, valid_moves)
         else:
-            return self.get_move_computer(player, valid_moves, state)
+            return self.get_move_computer(player, valid_moves)
 
-    @staticmethod
-    def get_move_computer(player, valid_moves, state):
-        is_move_valid = False
-        while not is_move_valid:
-            if not player.type == 'learning':
-                move = random.randint(0, 23)
-            else:
-                move = player.prediction(state)
-            if move in valid_moves:
-                is_move_valid = True
-        return move
+    def get_move_computer(self, player, valid_moves):
+        if not player.type == 'learning':
+            move_idx = random.randrange(0, len(valid_moves))
+        else:
+            state = self.get_state_num()
+            is_move_valid = False
+            while not is_move_valid:
+                move_idx = player.prediction(state)
+                if move_idx in valid_moves:
+                    is_move_valid = True
+        return list(valid_moves)[move_idx]
 
-    @staticmethod
-    def get_move_human(type, player, valid_moves):
+    def get_move_human(self, player, valid_moves):
+        self.display_board()
+        print('Select from the following valid moves:')
+        for i, x in enumerate(valid_moves):
+            print(i, x)
         is_move_valid = False
         while not is_move_valid:
             print(player.name, 'Please enter location to ' + type + ':')
