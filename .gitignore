@@ -3,7 +3,7 @@ output.txt
 # Pycharm
 
 .idea/
-
+/venv/
 #################
 ## Eclipse
 #################
