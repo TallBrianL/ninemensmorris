@@ -1,7 +1,7 @@
-import random
+from game import Game
 
 
-class NineMenGame:
+class NineMenGame(Game):
     board_ref = '''A --- B --- C
 | D - E - F |
 | | G H I | |
@@ -29,11 +29,10 @@ V --- W --- X'''
             (2, 14, 23)]
 
     def __init__(self, p1, p2):
+        super().__init__(p1, p2)
         self.board = [0 for _ in range(8 * 3)]
         self.player_to_move = 0
-        self.players = (p1, p2)
         self.num_stones_to_play = [9, 9]
-        # print(self.board_ref)
 
     def get_state_num(self):
         board_state = sum([x**3 * y for x, y in enumerate(self.board)])
@@ -80,11 +79,9 @@ V --- W --- X'''
         row, col = self.find_row_and_col(move)
         return self.is_triple_match(self.rows[row]) or self.is_triple_match(self.cols[col])
 
-    def place_piece(self):
-        #self.display_board()
-        move = self.select_move(self.get_open_locations())
-        self.board[move] = self.current_player()
-        if self.new_line_created(move):
+    def place_piece(self, selected_move):
+        self.board[selected_move] = self.current_player()
+        if self.new_line_created(selected_move):
             self.capture_piece()
         self.num_stones_to_play[self.player_to_move] -= 1
         self.player_to_move ^= 1
@@ -96,22 +93,16 @@ V --- W --- X'''
         if not valid_moves:
             return True
 
-    def take_turn(self):
+    def take_turn(self, selected_move):
         if self.num_stones_to_play[self.player_to_move] > 0:
-            self.place_piece()
+            self.place_piece(selected_move)
         else:
-            self.make_move()
+            self.make_move(selected_move)
 
-    def make_move(self):
-        if self.has_less_than_3_stones():
-            return False
-        valid_moves = self.get_valid_moves()
-        if not valid_moves:
-            return False
-        move = self.select_move(valid_moves)
-        self.board[move[1]] = self.current_player()
-        self.board[move[0]] = 0
-        if self.new_line_created(move[1]):
+    def make_move(self, selected_move):
+        self.board[selected_move[1]] = self.current_player()
+        self.board[selected_move[0]] = 0
+        if self.new_line_created(selected_move[1]):
             self.capture_piece()
         self.player_to_move = self.player_to_move ^ 1
         return True
@@ -166,37 +157,3 @@ V --- W --- X'''
         stones = self.get_stone_locations(self.current_player())
         num_stones = len(stones) + self.num_stones_to_play[self.player_to_move]
         return num_stones < 3
-
-    def select_move(self, valid_moves):
-        player = self.players[self.current_player() - 1]
-        if player.is_human():
-            return self.get_move_human(type, player, valid_moves)
-        else:
-            return self.get_move_computer(player, valid_moves)
-
-    def get_move_computer(self, player, valid_moves):
-        if not player.type == 'learning':
-            move_idx = random.randrange(0, len(valid_moves))
-        else:
-            state = self.get_state_num()
-            is_move_valid = False
-            while not is_move_valid:
-                move_idx = player.prediction(state)
-                if move_idx in valid_moves:
-                    is_move_valid = True
-        return list(valid_moves)[move_idx]
-
-    def get_move_human(self, player, valid_moves):
-        self.display_board()
-        print('Select from the following valid moves:')
-        for i, x in enumerate(valid_moves):
-            print(i, x)
-        is_move_valid = False
-        while not is_move_valid:
-            print(player.name, 'Please enter location to ' + type + ':')
-            user_input = input()
-            if len(user_input) > 0:
-                move = ord(user_input[0]) - ord('A')
-                if 0 <= move <= 23 and move in valid_moves:
-                    is_move_valid = True
-        return move

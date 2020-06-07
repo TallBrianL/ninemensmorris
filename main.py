@@ -19,7 +19,7 @@ def run_many_games():
     for _ in range(100):
         player2 = player.Player('Dani', 'computer', 2, prediction)
         game_instance = ninemen.NineMenGame(player1, player2)
-        winner, state_list = game.play_game(game_instance)
+        winner, state_list = game_instance.play_game()
         print_to_file(file, state_list, winner)
         for state in state_list:
             # print(state)
