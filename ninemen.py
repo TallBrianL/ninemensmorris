@@ -89,6 +89,19 @@ V --- W --- X'''
         self.num_stones_to_play[self.player_to_move] -= 1
         self.player_to_move ^= 1
 
+    def is_game_over(self):
+        if self.has_less_than_3_stones():
+            return True
+        valid_moves = self.get_valid_moves()
+        if not valid_moves:
+            return True
+
+    def take_turn(self):
+        if self.num_stones_to_play[self.player_to_move] > 0:
+            self.place_piece()
+        else:
+            self.make_move()
+
     def make_move(self):
         if self.has_less_than_3_stones():
             return False
@@ -134,7 +147,10 @@ V --- W --- X'''
     def get_valid_moves(self):
         stones = self.get_stone_locations(self.current_player())
 
-        if len(stones) > 3:
+        if self.num_stones_to_play[self.player_to_move]:
+            valid_moves = [i for i, v in enumerate(self.board) if v == 0]
+
+        elif len(stones) > 3:
             # Regular movement phase
             valid_moves = set()
             for stone in stones:
@@ -148,7 +164,7 @@ V --- W --- X'''
 
     def has_less_than_3_stones(self):
         stones = self.get_stone_locations(self.current_player())
-        num_stones = len(stones)
+        num_stones = len(stones) + self.num_stones_to_play[self.player_to_move]
         return num_stones < 3
 
     def select_move(self, valid_moves):

@@ -4,15 +4,8 @@ verbose = False
 def play_game(game_instance):
     state_list = []
 
-    # Original Placing Stones Phase
-    while game_instance.num_stones_to_play[game_instance.player_to_move] > 0:
-        if verbose:
-            game_instance.display_board()
-        game_instance.place_piece()
-        state_list.append(game_instance.get_state_num())
-
-    # Secondary Moving Stones Phase
-    while game_instance.make_move():
+    while not game_instance.is_game_over():
+        game_instance.take_turn()
         if verbose:
             game_instance.display_board()
         state_list.append(game_instance.get_state_num())
