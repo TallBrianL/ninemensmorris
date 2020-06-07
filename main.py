@@ -1,6 +1,5 @@
 import player
 import ninemen
-import game
 
 
 def print_to_file(file, state_list, winner):
