@@ -3,12 +3,12 @@ from game import Game
 
 class NineMenGame(Game):
     board_ref = '''A --- B --- C
-| D - E - F |
-| | G H I | |
-J K L   M N O
-| | P Q R | |
-| S - T - U |
-V --- W --- X'''
+                   | D - E - F |
+                   | | G H I | |
+                   J K L   M N O
+                   | | P Q R | |
+                   | S - T - U |
+                   V --- W --- X'''
 
     rows = [(0, 1, 2),
             (3, 4, 5),
@@ -53,14 +53,14 @@ V --- W --- X'''
         output_str = 'It is ' + str(self.current_player()) + '\'s turn to play:\n' +\
             str(self.current_player()) + ' has ' + str(self.num_stones_to_play[0]) + ' stones to place\n' +\
             str(self.current_opponent()) + ' has ' + str(self.num_stones_to_play[0]) + ' stones to place\n' +\
-            letter_board[0] + '--' + letter_board[1] + '--' + letter_board[2] + '\n' +\
-            '|' + letter_board[3] + '-' + letter_board[4] + '-' + letter_board[5] + '|' + '\n' +\
-            '||' + letter_board[6] + letter_board[7] + letter_board[8] + '||' + '\n' +\
-            letter_board[9] + letter_board[10] + letter_board[11] + ' ' +\
-            letter_board[12] + letter_board[13] + letter_board[14] + '\n' +\
-            '||' + letter_board[15] + letter_board[16] + letter_board[17] + '||' + '\n' +\
-            '|' + letter_board[18] + '-' + letter_board[19] + '-' + letter_board[20] + '|' + '\n' +\
-            letter_board[21] + '--' + letter_board[22] + '--' + letter_board[23]
+            letter_board[0] + ' --- ' + letter_board[1] + ' --- ' + letter_board[2] + '\n' +\
+            '| ' + letter_board[3] + ' - ' + letter_board[4] + ' - ' + letter_board[5] + ' |' + '\n' +\
+            '| | ' + letter_board[6] + ' ' + letter_board[7] + ' ' + letter_board[8] + ' | |' + '\n' +\
+            letter_board[9] + ' ' + letter_board[10] + ' ' + letter_board[11] + '   ' +\
+            letter_board[12] + ' ' + letter_board[13] + ' ' + letter_board[14] + '\n' +\
+            '| | ' + letter_board[15] + ' ' + letter_board[16] + ' ' + letter_board[17] + ' | |' + '\n' +\
+            '| ' + letter_board[18] + ' - ' + letter_board[19] + ' - ' + letter_board[20] + ' |' + '\n' +\
+            letter_board[21] + ' --- ' + letter_board[22] + ' --- ' + letter_board[23]
         return output_str
 
     def current_player(self):
