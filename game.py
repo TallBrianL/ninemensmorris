@@ -1,7 +1,7 @@
 import random
 
 
-verbose = False
+verbose = True
 
 
 class Game:
@@ -31,7 +31,7 @@ class Game:
             selected_move = self.select_move(valid_moves)
             self.take_turn(selected_move)
             if verbose:
-                self.display_board()
+                print(self)
             state_list.append(self.get_state_num())
     
         # Game Over
