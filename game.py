@@ -35,12 +35,11 @@ class Game:
             state_list.append(self.get_state_num())
     
         # Game Over
-        print('Player', self.current_opponent(), 'has won!!! (game took', len(state_list), 'moves.)')
-        winner = self.current_opponent()
-        return winner, state_list
+        print(self.players[self.winner() -1], 'has won!!! (game took', len(state_list), 'moves.)')
+        return self.winner(), state_list
 
     def select_move(self, valid_moves):
-        player = self.players[self.current_player() - 1]
+        player = self.players[self.current_player()]
         if player.is_human():
             return self.get_move_human(type, player, valid_moves)
         else:

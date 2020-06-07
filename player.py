@@ -6,5 +6,8 @@ class Player:
         self.number = number
         self.prediction = prediction
 
+    def __str__(self):
+        return self.name
+
     def is_human(self):
         return self.type == 'human'

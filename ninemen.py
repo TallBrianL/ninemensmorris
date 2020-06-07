@@ -42,7 +42,7 @@ class NineMenGame(Game):
             return True
 
     def get_valid_moves(self):
-        stones = self.__get_stone_locations(self.current_player())
+        stones = self.__get_stone_locations(self.player_to_move)
 
         if self.num_stones_to_play[self.player_to_move]:
             valid_moves = [i for i, v in enumerate(self.board) if v == 0]
@@ -72,9 +72,9 @@ class NineMenGame(Game):
 
     def __str__(self):
         letter_board = ['.' if x[1] == 0 else str(x[1]) for x in enumerate(self.board)]
-        output_str = 'It is ' + str(self.current_player()) + '\'s turn to play:\n' + \
-                     str(self.current_player()) + ' has ' + str(self.num_stones_to_play[0]) + ' stones to place\n' + \
-                     str(self.current_opponent()) + ' has ' + str(self.num_stones_to_play[0]) + ' stones to place\n' + \
+        output_str = 'It\'s ' + self.players[self.player_to_move].name + '\'s turn to play:\n' + \
+                     self.players[0].name + ' is 1 and has ' + str(self.num_stones_to_play[0]) + ' stones to place\n' + \
+                     self.players[1].name + ' is 2 and has ' + str(self.num_stones_to_play[1]) + ' stones to place\n' + \
                      letter_board[0] + ' --- ' + letter_board[1] + ' --- ' + letter_board[2] + '\n' + \
                      '| ' + letter_board[3] + ' - ' + letter_board[4] + ' - ' + letter_board[5] + ' |' + '\n' + \
                      '| | ' + letter_board[6] + ' ' + letter_board[7] + ' ' + letter_board[8] + ' | |' + '\n' + \
@@ -95,14 +95,16 @@ class NineMenGame(Game):
                self.board[list_of_3[0]] == self.board[list_of_3[2]]
 
     def current_player(self):
-        return int(self.player_to_move + 1)
+        return int(self.player_to_move)
 
-    def current_opponent(self):
+    def winner(self):
+        return self.__current_opponent()
+
+    def __current_opponent(self):
         return int((self.player_to_move ^ 1) + 1)
 
     def __capture_piece(self):
-        move = self.select_move(self.__get_stone_locations(self.current_opponent()))
-        # print('====PLAYER', self.current_player(), 'captures piece', move, '!====')
+        move = self.select_move(self.__get_stone_locations(self.__current_opponent() - 1))
         self.board[move] = 0
 
     def __new_line_created(self, move):
@@ -110,14 +112,14 @@ class NineMenGame(Game):
         return self.__is_triple_match(self.rows[row]) or self.__is_triple_match(self.cols[col])
 
     def __place_piece(self, selected_move):
-        self.board[selected_move] = self.current_player()
+        self.board[selected_move] = self.current_player() + 1
         if self.__new_line_created(selected_move):
             self.__capture_piece()
         self.num_stones_to_play[self.player_to_move] -= 1
         self.player_to_move ^= 1
 
     def __make_move(self, selected_move):
-        self.board[selected_move[1]] = self.current_player()
+        self.board[selected_move[1]] = self.current_player() + 1
         self.board[selected_move[0]] = 0
         if self.__new_line_created(selected_move[1]):
             self.__capture_piece()
@@ -125,8 +127,8 @@ class NineMenGame(Game):
         return True
 
     # Returns the indices of board locations of player's stones
-    def __get_stone_locations(self, player):
-        return [x[0] for x in enumerate(self.board) if x[1] == player]
+    def __get_stone_locations(self, player_idx):
+        return [x[0] for x in enumerate(self.board) if x[1] == player_idx + 1]
 
     # Returns the indices of empty board locations
     def __get_open_locations(self):
@@ -153,6 +155,6 @@ class NineMenGame(Game):
         return moves
 
     def __has_less_than_3_stones(self):
-        stones = self.__get_stone_locations(self.current_player())
+        stones = self.__get_stone_locations(self.player_to_move)
         num_stones = len(stones) + self.num_stones_to_play[self.player_to_move]
         return num_stones < 3
