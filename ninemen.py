@@ -138,12 +138,12 @@ class NineMenGame(Game):
     def __get_all_moves_for_a_stone(self, stone):
         moves = set()
         row, col = self.__find_row_and_col(stone)
-        moves |= self.get_moves(self.rows[row], stone)
-        moves |= self.get_moves(self.cols[col], stone)
+        moves |= self.__get_moves(self.rows[row], stone)
+        moves |= self.__get_moves(self.cols[col], stone)
         return moves
 
     @staticmethod
-    def get_moves(positions, stone):
+    def __get_moves(positions, stone):
         pos = positions.index(stone)
         moves = set()
         if pos == 0:
