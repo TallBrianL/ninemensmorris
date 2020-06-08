@@ -65,10 +65,11 @@ class NineMenGame(Game):
         else:
             self.__make_move(selected_move)
 
-    def get_state_num(self):
-        board_state = sum([x**3 * y for x, y in enumerate(self.board)])
-        stones_state = sum([x**10 * y for x, y in enumerate(self.num_stones_to_play)])
-        return board_state, stones_state, self.player_to_move
+    def get_state_string(self):
+        board_state = ''.join(str(x) for x in self.board)
+        stones_state = ''.join(str(x) for x in self.num_stones_to_play)
+        state_string = str(self.player_to_move) + stones_state + board_state
+        return state_string
 
     def __str__(self):
         letter_board = ['.' if x[1] == 0 else str(x[1]) for x in enumerate(self.board)]

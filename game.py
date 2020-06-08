@@ -20,7 +20,7 @@ class Game:
     def display_board(self):
         return
 
-    def get_state_num(self):
+    def get_state_string(self):
         return
 
     def play_game(self):
@@ -32,7 +32,7 @@ class Game:
             self.take_turn(selected_move)
             if verbose:
                 print(self)
-            state_list.append(self.get_state_num())
+            state_list.append(self.get_state_string())
     
         # Game Over
         print(self.players[self.winner() -1], 'has won!!! (game took', len(state_list), 'moves.)')
@@ -49,7 +49,7 @@ class Game:
         if not player.type == 'learning':
             move_idx = random.randrange(0, len(valid_moves))
         else:
-            state = self.get_state_num()
+            state = self.get_state_string()
             is_move_valid = False
             while not is_move_valid:
                 move_idx = player.prediction(state)
