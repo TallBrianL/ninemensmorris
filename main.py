@@ -1,6 +1,7 @@
 import player
 import ninemen
 import pickle
+import time
 
 def print_to_file(file, state_list, winner):
     with open(file, 'a') as f:
@@ -10,7 +11,8 @@ def print_to_file(file, state_list, winner):
                     str(winner) + '\n')
 
 
-def run_many_games():
+def run_infinitely():
+    start_time = time.time()
     file = "output.txt"
     print("Let's Play")
     try:
@@ -18,6 +20,7 @@ def run_many_games():
     except:
         prediction = dict()
     while True:
+        batch_time = time.time()
         player1 = player.Player('Brian', 'computer', 1, prediction)
         player2 = player.Player('Dani', 'computer', 2, prediction)
         players = (player1, player2)
@@ -36,7 +39,7 @@ def run_many_games():
         print("pickling...")
         pickle.dump(prediction, open( "save.p", "wb" ) )
         print("...pickled")
-    print("All Done")
+        print(round(time.time() - start_time), "seconds", round(time.time() - batch_time), "seconds")
 
 
-run_many_games()
+run_infinitely()
