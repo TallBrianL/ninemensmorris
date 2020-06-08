@@ -35,7 +35,6 @@ class Game:
             state_list.append(self.get_state_string())
     
         # Game Over
-        print(self.players[self.winner() -1], 'has won!!! (game took', len(state_list), 'moves.)')
         return self.winner(), state_list
 
     def select_move(self, valid_moves):
