@@ -31,14 +31,16 @@ class Game:
 
     def play_game(self):
         state_list = []
+        move_count = 0
     
-        while not self.is_game_over():
+        while not self.is_game_over() and move_count < 100:
             valid_moves = self.get_valid_moves()
             selected_move = self.players[self.current_player()].select_move(self)
             self.take_action(selected_move)
             if verbose:
                 print(self)
             state_list.append(self.get_state_string())
+            move_count += 1
     
         # Game Over
         return self.winner(), state_list
