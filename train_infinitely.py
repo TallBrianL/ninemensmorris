@@ -3,6 +3,7 @@ import ninemen
 import pickle
 import time
 import os
+from tqdm import tqdm
 
 
 def train_infinitely():
@@ -12,6 +13,7 @@ def train_infinitely():
     print("Let's Play")
     try:
         prediction = pickle.load(open(save_file, "rb"))
+        print('model loaded')
     except:
         print('cannot open', save_file)
         print('creating a new prediction dictionary')
@@ -20,8 +22,10 @@ def train_infinitely():
         batch_time = time.time()
         player1 = player.RandomComputer('Brian')
         player2 = player.TrainedComputer('Dani', prediction)
+        print('players loaded')
         winner_sum = 0
-        for _ in range(iterations):
+        print('playing games')
+        for _ in tqdm(range(iterations)):
             game_instance = ninemen.NineMenGame(player1, player2)
             winner, state_list = game_instance.play_game()
             winner_sum += winner
