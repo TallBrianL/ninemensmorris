@@ -51,13 +51,13 @@ class TrainedComputer(Player):
             game_copy = copy.deepcopy(game)
             possible_state = game_copy.take_action(move)
             try:
-                if self.model[game.get_state_string()] > best_score:
-                    best_score = self.model[game.get_state_string()]
-                    best_move_idx = idx
+                modeled_score = self.model[game.get_state_string()][0]
             except:
-                if .5 > best_score:
-                    best_score = .5
-                    best_move_idx = idx
+                modeled_score = .5
+            modeled_score = modeled_score + (random.random() - .5) / 2
+            if modeled_score > best_score:
+                best_score = modeled_score
+                best_move_idx = idx
         return valid_moves[best_move_idx]
 
 
