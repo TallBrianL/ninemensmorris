@@ -18,8 +18,8 @@ def train_infinitely():
         prediction = dict()
     while True:
         batch_time = time.time()
-        player1 = player.Player('Brian', 'computer', 1, prediction)
-        player2 = player.Player('Dani', 'computer', 2, prediction)
+        player1 = player.RandomComputer('Brian')
+        player2 = player.RandomComputer('Dani')
         for _ in range(iterations):
             game_instance = ninemen.NineMenGame(player1, player2)
             winner, state_list = game_instance.play_game()
@@ -35,4 +35,5 @@ def train_infinitely():
         print(round(time.time() - start_time), "seconds", round(time.time() - batch_time), "seconds")
 
 
-train_infinitely()
+if __name__ == "__main__":
+    train_infinitely()
