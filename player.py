@@ -1,5 +1,5 @@
 import random
-
+import copy
 
 class Player:
     def __init__(self, name):
@@ -48,10 +48,16 @@ class TrainedComputer(Player):
         best_score = 0
         best_move_idx = -1
         for idx, move in enumerate(valid_moves):
-            possible_state = game.take_action(move)
-            if self.model[game.get_state_string()] > best_score:
-                best_score = self.model[game.get_state_string()]
-                best_move_idx = idx
+            game_copy = copy.deepcopy(game)
+            possible_state = game_copy.take_action(move)
+            try:
+                if self.model[game.get_state_string()] > best_score:
+                    best_score = self.model[game.get_state_string()]
+                    best_move_idx = idx
+            except:
+                if .5 > best_score:
+                    best_score = .5
+                    best_move_idx = idx
         return valid_moves[best_move_idx]
 
 

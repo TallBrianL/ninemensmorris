@@ -114,7 +114,7 @@ class NineMenGame(Game):
         for move in valid_moves:
             self.board[move.new_pos] = self.player_to_move + 1
             if self.__is_new_line_created(move.new_pos):
-                for capture in self.__get_stone_locations(self.__current_opponent() - 1):
+                for capture in self.__get_stone_locations(self.__current_opponent()):
                     move.capture = capture
                     valid_moves_with_captures.append(move)
 
@@ -182,7 +182,7 @@ class NineMenGame(Game):
         return self.__current_opponent()
 
     def __current_opponent(self):
-        return int((self.player_to_move ^ 1) + 1)
+        return int((self.player_to_move ^ 1))
 
     def __is_triple_match(self, list_of_3):
         return self.board[list_of_3[0]] == self.board[list_of_3[1]] and \
@@ -196,6 +196,8 @@ class NineMenGame(Game):
         if selected_move.old_pos == -1:
             # Placing a new stone
             self.num_stones_to_play[self.player_to_move] -= 1
+            if self.num_stones_to_play[self.player_to_move] < 0:
+                print('oh no')
         else:
             # Moving a stone
             self.board[selected_move.old_pos] = 0
