@@ -14,7 +14,7 @@ class Game:
     def get_valid_moves(self):
         return list()
 
-    def take_turn(self, selected_move):
+    def take_action(self, selected_move):
         return
 
     def display_board(self):
@@ -23,26 +23,25 @@ class Game:
     def get_state_string(self):
         return
 
+    def winner(self):
+        return -1
+
+    def current_player(self):
+        return self.players[0]
+
     def play_game(self):
         state_list = []
     
         while not self.is_game_over():
             valid_moves = self.get_valid_moves()
-            selected_move = self.select_move(valid_moves)
-            self.take_turn(selected_move)
+            selected_move = self.players[self.current_player()].select_move(self)
+            self.take_action(selected_move)
             if verbose:
                 print(self)
             state_list.append(self.get_state_string())
     
         # Game Over
         return self.winner(), state_list
-
-    def select_move(self, valid_moves):
-        player = self.players[self.current_player()]
-        if player.is_human():
-            return self.get_move_human(type, player, valid_moves)
-        else:
-            return self.get_move_computer(player, valid_moves)
 
     def get_move_computer(self, player, valid_moves):
         if not player.type == 'learning':
