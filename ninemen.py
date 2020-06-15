@@ -9,6 +9,9 @@ class NineMenGame(Game):
             self.new_pos = new_pos
             self.capture = capture
 
+        def __str__(self):
+            return str([self.old_pos, self.new_pos, self.capture])
+
     board_ref = '''A --- B --- C
                    | D - E - F |
                    | | G H I | |
