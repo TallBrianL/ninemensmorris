@@ -116,6 +116,8 @@ class NineMenGame(Game):
 
         valid_moves_with_captures = list()
         for move in valid_moves:
+            if move.old_pos != -1:
+                self.board[move.old_pos] = 0
             self.board[move.new_pos] = self.player_to_move + 1
             if self.__is_new_line_created(move.new_pos):
                 for capture in self.__get_stone_locations(self.__current_opponent()):
@@ -126,6 +128,8 @@ class NineMenGame(Game):
             else:
                 valid_moves_with_captures.append(move)
             self.board[move.new_pos] = 0
+            if move.old_pos != 1:
+                self.board[move.old_pos] = self.player_to_move + 1
         return valid_moves_with_captures
 
     def get_cannonical_state(self):
