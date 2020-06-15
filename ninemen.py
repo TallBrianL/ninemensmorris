@@ -1,4 +1,5 @@
 from game import Game
+import copy
 
 
 class NineMenGame(Game):
@@ -115,8 +116,9 @@ class NineMenGame(Game):
             self.board[move.new_pos] = self.player_to_move + 1
             if self.__is_new_line_created(move.new_pos):
                 for capture in self.__get_stone_locations(self.__current_opponent()):
-                    move.capture = capture
-                    valid_moves_with_captures.append(move)
+                    temp_move = copy.deepcopy(move)
+                    temp_move.capture = capture
+                    valid_moves_with_captures.append(temp_move)
 
             else:
                 valid_moves_with_captures.append(move)
