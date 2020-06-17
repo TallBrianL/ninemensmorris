@@ -128,7 +128,7 @@ class NineMenGame(Game):
             else:
                 valid_moves_with_captures.append(move)
             self.board[move.new_pos] = 0
-            if move.old_pos != 1:
+            if move.old_pos != -1:
                 self.board[move.old_pos] = self.player_to_move + 1
         return valid_moves_with_captures
 
