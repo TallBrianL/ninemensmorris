@@ -135,7 +135,7 @@ class NineMenGame(Game):
     def get_cannonical_state(self):
         stones_to_play = self.num_stones_to_play.copy()
         board = self.board.copy()
-        if self.player_to_move:
+        if not self.player_to_move:
             stones_to_play.reverse()
             player_0_locs = [i for i,v in enumerate(board) if v == 1]
             player_1_locs = [i for i,v in enumerate(board) if v == 2]
@@ -204,12 +204,10 @@ class NineMenGame(Game):
 
     def take_action(self, selected_move):
         if selected_move.old_pos == -1:
-            # Placing a new stone
+            # Placing a new stone, remove a stone from the store
             self.num_stones_to_play[self.player_to_move] -= 1
-            if self.num_stones_to_play[self.player_to_move] < 0:
-                print('oh no')
         else:
-            # Moving a stone
+            # Moving a stone, remove from move origin
             self.board[selected_move.old_pos] = 0
 
         self.board[selected_move.new_pos] = self.current_player() + 1

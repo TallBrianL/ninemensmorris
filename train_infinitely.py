@@ -35,7 +35,8 @@ def train_infinitely():
                     prediction[state] = (val * count + winner) / (count + 1), count + 1
                 else:
                     prediction[state] = (winner, 1)
-        print("winner ", str(winner_sum / iterations), "pickling...")
+                winner = winner ^ 1
+        print("winner ", str(winner_sum / iterations), " in ", str(len(state_list)), " moves; pickling...")
         pickle.dump(prediction, open(save_file, "wb"))
         print("...pickled", save_file, os.stat(save_file).st_size / 1e6, "MB")
         print(round(time.time() - start_time), "seconds", round(time.time() - batch_time), "seconds")
