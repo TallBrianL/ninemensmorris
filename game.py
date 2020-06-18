@@ -1,4 +1,5 @@
 verbose = False
+MAX_MOVE_COUNT = 10000
 
 
 class Game:
@@ -30,8 +31,7 @@ class Game:
         state_list = []
         move_count = 0
     
-        while not self.is_game_over() and move_count < 100:
-            valid_moves = self.get_valid_moves()
+        while not self.is_game_over() and move_count < MAX_MOVE_COUNT:
             selected_move = self.players[self.current_player()].select_move(self)
             self.take_action(selected_move)
             if verbose:
