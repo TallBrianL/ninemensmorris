@@ -153,12 +153,13 @@ class NineMenGame(Game):
             self.__flip_board(board)
         return board, stones_to_play
 
-    def get_state_string(self):
+    def get_state_num(self):
         canonical_board, canonical_stones = self.get_cannonical_state()
         board_state = ''.join(str(x) for x in canonical_board)
         stones_state = ''.join(str(x) for x in canonical_stones)
         state_string = board_state + stones_state
-        return int(state_string)
+        state_num = int(state_string)
+        return state_num
 
     def __str__(self):
         letter_board = ['.' if x[1] == 0 else str(x[1]) for x in enumerate(self.board)]

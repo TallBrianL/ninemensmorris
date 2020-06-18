@@ -18,7 +18,7 @@ class Game:
     def display_board(self):
         return
 
-    def get_state_string(self):
+    def get_state_num(self):
         return
 
     def winner(self):
@@ -35,8 +35,9 @@ class Game:
             selected_move = self.players[self.current_player()].select_move(self)
             self.take_action(selected_move)
             if verbose:
+                print(selected_move)
                 print(self)
-            state_list.append(self.get_state_string())
+            state_list.append(self.get_state_num())
             move_count += 1
     
         # Game Over
