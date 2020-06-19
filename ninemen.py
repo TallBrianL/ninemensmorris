@@ -65,33 +65,42 @@ class NineMenGame(Game):
         board[21], board[23] = board[23], board[21]
 
     @staticmethod
-    def __rotate_board(old_board):
-        new_board = old_board.copy()
-        new_board[0] = old_board[21]
-        new_board[1] = old_board[9]
-        new_board[2] = old_board[0]
-        new_board[3] = old_board[18]
-        new_board[4] = old_board[10]
-        new_board[5] = old_board[3]
-        new_board[6] = old_board[15]
-        new_board[7] = old_board[11]
-        new_board[8] = old_board[6]
-        new_board[9] = old_board[22]
-        new_board[10] = old_board[19]
-        new_board[11] = old_board[16]
-        new_board[12] = old_board[7]
-        new_board[13] = old_board[4]
-        new_board[14] = old_board[1]
-        new_board[15] = old_board[17]
-        new_board[16] = old_board[12]
-        new_board[17] = old_board[8]
-        new_board[18] = old_board[20]
-        new_board[19] = old_board[13]
-        new_board[20] = old_board[5]
-        new_board[21] = old_board[23]
-        new_board[22] = old_board[14]
-        new_board[23] = old_board[2]
-        old_board = new_board
+    def __rotate_board(board):
+        temp = board[0]
+        board[0] = board[21]
+        board[21] = board[23]
+        board[23] = board[2]
+        board[2] = temp
+
+        temp = board[1]
+        board[1] = board[9]
+        board[9] = board[22]
+        board[22] = board[14]
+        board[14] = temp
+
+        temp = board[3]
+        board[3] = board[18]
+        board[18] = board[20]
+        board[20] = board[5]
+        board[5] = temp
+
+        temp = board[4]
+        board[4] = board[10]
+        board[10] = board[19]
+        board[19] = board[13]
+        board[13] = temp
+
+        temp = board[6]
+        board[6] = board[15]
+        board[15] = board[17]
+        board[17] = board[8]
+        board[8] = temp
+
+        temp = board[7]
+        board[7] = board[11]
+        board[11] = board[16]
+        board[12] = board[7]
+        board[16] = temp
 
     def is_game_over(self):
         if self.__has_less_than_3_stones():
