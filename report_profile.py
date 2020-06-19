@@ -2,4 +2,11 @@ import cProfile
 import train_infinitely
 
 
-cProfile.run('train_infinitely.train_infinitely(10)')
+pr = cProfile.Profile()
+pr.enable()
+
+train_infinitely.train_infinitely(10)
+
+pr.disable()
+
+pr.print_stats(sort='time')
