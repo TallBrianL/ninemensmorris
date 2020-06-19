@@ -9,7 +9,7 @@ import sys
 
 def train_infinitely(total_iteration_target):
     total_iteration_count = 0
-    iterations_per_cycle = 10
+    iterations_per_cycle = 100
     start_time = time.time()
     save_file = "save.p"
     print("Let's Play")

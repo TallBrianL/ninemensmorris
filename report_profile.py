@@ -5,7 +5,7 @@ import train_infinitely
 pr = cProfile.Profile()
 pr.enable()
 
-train_infinitely.train_infinitely()
+train_infinitely.train_infinitely(200)
 
 pr.disable()
 
