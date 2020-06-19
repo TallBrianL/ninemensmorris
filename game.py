@@ -42,6 +42,8 @@ class Game:
                 print(self)
             state_list.append(self.get_state_num())
             move_count += 1
+            if move_count % 10 == 0:
+                print('.', end='')
     
         # Game Over
         return self.winner(), state_list
