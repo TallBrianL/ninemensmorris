@@ -287,7 +287,6 @@ class NineMenGame(Game):
         return is_new_line_created
 
     def take_action(self, selected_move):
-        self.player_to_move = self.player_to_move ^ 1
 
         if selected_move.old_pos == -1:
             # Placing a new stone, remove a stone from the store
@@ -302,9 +301,12 @@ class NineMenGame(Game):
             # Capture
             self.board[selected_move.capture] = 0
 
+        self.player_to_move = self.player_to_move ^ 1
         return True
 
     def invert_action(self, selected_move):
+        self.player_to_move = self.player_to_move ^ 1
+
         if selected_move.old_pos == -1:
             # Placing a new stone, remove a stone from the store
             self.num_stones_to_play[self.player_to_move] += 1
@@ -318,7 +320,6 @@ class NineMenGame(Game):
             # Capture
             self.board[selected_move.capture] = self.__current_opponent() + 1
 
-        self.player_to_move = self.player_to_move ^ 1
         return True
 
     # Returns the indices of board locations of player's stones
