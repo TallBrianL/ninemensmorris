@@ -1,4 +1,5 @@
 from game import Game
+import sys
 import copy
 
 
@@ -11,6 +12,12 @@ class NineMenGame(Game):
 
         def __str__(self):
             return str([self.old_pos, self.new_pos, self.capture])
+
+        def __cmp__(self, other):
+            return self.old_pos == other.old_pos and self.new_pos == other.new_pos and self.capture == other.capture
+
+        def __eq__(self, other):
+            return self.old_pos == other.old_pos and self.new_pos == other.new_pos and self.capture == other.capture
 
     board_ref = '''A --- B --- C
                    | D - E - F |
@@ -116,10 +123,7 @@ class NineMenGame(Game):
 
         valid_moves_with_captures = list()
         for move in valid_moves:
-            if move.old_pos != -1:
-                self.board[move.old_pos] = 0
-            self.board[move.new_pos] = self.player_to_move + 1
-            if self.__is_new_line_created(move.new_pos):
+            if self.__is_new_line_created(move, self.player_to_move + 1):
                 for capture in self.__get_stone_locations(self.__current_opponent()):
                     temp_move = copy.deepcopy(move)
                     temp_move.capture = capture
@@ -127,10 +131,67 @@ class NineMenGame(Game):
 
             else:
                 valid_moves_with_captures.append(move)
-            self.board[move.new_pos] = 0
-            if move.old_pos != -1:
-                self.board[move.old_pos] = self.player_to_move + 1
         return valid_moves_with_captures
+
+    def get_human_move(self, player_name):
+        valid_moves = self.get_valid_moves()
+
+        if self.num_stones_to_play[self.player_to_move]:
+            old_pos = -1
+            print(player_name,  ', place a stone on the board (q to quit):', )
+            print(self)
+            while True:
+                user_input = input()
+                if user_input == 'q':
+                    sys.exit('User quits')
+                elif len(user_input) == 1:
+                    new_pos = ord(user_input[0]) - ord('A')
+                    if new_pos in [x.new_pos for x in valid_moves]:
+                        break
+                    else:
+                        print('invalid move, please try again')
+        else:
+            print(player_name,  ', choose a stone to move (q to quit):', )
+            print(self)
+            while True:
+                user_input = input()
+                if user_input == 'q':
+                    sys.exit('User quits')
+                elif len(user_input) == 1:
+                    old_pos = ord(user_input[0]) - ord('A')
+                    if old_pos in [x.old_pos for x in valid_moves]:
+                        break
+                    else:
+                        print('invalid move, please try again')
+            print(player_name,  ', choose where to move selected stone (q to quit):', )
+            print(self)
+            while True:
+                user_input = input()
+                if user_input == 'q':
+                    sys.exit('User quits')
+                elif len(user_input) == 1:
+                    new_pos = ord(user_input[0]) - ord('A')
+                    if (old_pos, new_pos) in [(x.old_pos, x.new_pos) for x in valid_moves]:
+                        break
+                    else:
+                        print('invalid move, please try again')
+        if self.__is_new_line_created(self.Move(old_pos, new_pos, -1), self.player_to_move + 1):
+            print(player_name,  ', choose which stone to capture (q to quit):', )
+            print(self)
+            while True:
+                user_input = input()
+                if user_input == 'q':
+                    sys.exit('User quits')
+                elif len(user_input) == 1:
+                    capture = ord(user_input[0]) - ord('A')
+                    if (old_pos, new_pos, capture) in [(x.old_pos, x.new_pos, x.capture) for x in valid_moves]:
+                        break
+                    else:
+                        print('invalid move, please try again')
+        else:
+            capture = -1
+
+        return self.Move(old_pos, new_pos, capture)
 
     def get_cannonical_state(self):
         stones_to_play = self.num_stones_to_play.copy()
@@ -198,9 +259,16 @@ class NineMenGame(Game):
         return self.board[list_of_3[0]] == self.board[list_of_3[1]] and \
                self.board[list_of_3[0]] == self.board[list_of_3[2]]
 
-    def __is_new_line_created(self, new_loc):
-        row, col = self.__find_row_and_col(new_loc)
-        return self.__is_triple_match(self.rows[row]) or self.__is_triple_match(self.cols[col])
+    def __is_new_line_created(self, move, new_val):
+        row, col = self.__find_row_and_col(move.new_pos)
+        if move.old_pos != -1:
+            self.board[move.old_pos] = 0
+        self.board[move.new_pos] = new_val
+        is_new_line_created = self.__is_triple_match(self.rows[row]) or self.__is_triple_match(self.cols[col])
+        self.board[move.new_pos] = 0
+        if move.old_pos != -1:
+            self.board[move.old_pos] = new_val
+        return is_new_line_created
 
     def take_action(self, selected_move):
         if selected_move.old_pos == -1:

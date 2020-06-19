@@ -20,7 +20,7 @@ def train_infinitely():
         prediction = dict()
     while True:
         batch_time = time.time()
-        player1 = player.Human('Brian')
+        player1 = player.TrainedComputer('Brian', prediction)
         player2 = player.TrainedComputer('Dani', prediction)
         print('players loaded')
         winner_sum = 0

@@ -12,6 +12,9 @@ class Game:
     def get_valid_moves(self):
         return list()
 
+    def get_human_move(self, player_name):
+        return
+
     def take_action(self, selected_move):
         return
 

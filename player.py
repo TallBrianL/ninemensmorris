@@ -13,27 +13,30 @@ class Player:
         return valid_moves[0]
 
 
-class HumanPlayer(Player):
+class Debug(Player):
     def select_move(self, game):
         print(game)
-        valid_moves, move_type = game.get_valid_moves()
+        valid_moves = game.get_valid_moves()
         print('Select from the following valid moves:')
         for i, x in enumerate(valid_moves):
             print(i, x)
-        is_move_valid = False
-        move = valid_moves[0]
-        while not is_move_valid:
-            print(self.name, ' please enter location to ' + move_type + ':')
-            user_input = input()
-            if len(user_input) > 0:
-                move = ord(user_input[0]) - ord('A')
-                if 0 <= move <= 23 and move in valid_moves:
-                    is_move_valid = True
-        return move
+        move_idx = -1
+        while move_idx not in range(len(valid_moves)):
+            try:
+                print(self.name, ' please select move by index:')
+                move_idx = int(input())
+            except:
+                move_idx = -1
+        return valid_moves[move_idx]
 
 
-class PickFirstMove(Player):
-    def select_move(self, valid_moves):
+class Human(Player):
+    def select_move(self, game):
+        return game.get_human_move(self.name)
+
+
+class PickFirstMoveComputer(Player):
+    def select_move(self, game):
         valid_moves = game.get_valid_moves()
         return valid_moves[0]
 
@@ -46,19 +49,19 @@ class TrainedComputer(Player):
     def select_move(self, game):
         valid_moves = game.get_valid_moves()
         best_score = 0
-        best_move_idx = -1
-        for idx, move in enumerate(valid_moves):
+        for move in valid_moves:
             game_copy = copy.deepcopy(game)
-            possible_state = game_copy.take_action(move)
+            game_copy.take_action(move)
             try:
-                modeled_score = self.model[game.get_state_string()][0]
+                state = game_copy.get_state_num()
+                modeled_score = self.model[state][0]
             except:
                 modeled_score = .5
             modeled_score = modeled_score + (random.random() - .5) / 2
             if modeled_score > best_score:
                 best_score = modeled_score
-                best_move_idx = idx
-        return valid_moves[best_move_idx]
+                best_move = move
+        return best_move
 
 
 class RandomComputer(Player):
