@@ -49,11 +49,10 @@ class TrainedComputer(Player):
     def select_move(self, game):
         valid_moves = game.get_valid_moves()
         best_score = 0
+        best_move = valid_moves[0]
         for move in valid_moves:
-            game_copy = copy.deepcopy(game)
-            game_copy.take_action(move)
+            state = game.get_state_num_after_move(move)
             try:
-                state = game_copy.get_state_num()
                 modeled_score = self.model[state][0]
             except:
                 modeled_score = .5

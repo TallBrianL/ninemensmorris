@@ -1,6 +1,5 @@
 from game import Game
 import sys
-import copy
 
 
 class NineMenGame(Game):
@@ -201,8 +200,8 @@ class NineMenGame(Game):
         return self.Move(old_pos, new_pos, capture)
 
     def get_cannonical_state(self):
-        stones_to_play = self.num_stones_to_play.copy()
-        board = self.board.copy()
+        stones_to_play = self.num_stones_to_play[:]
+        board = self.board[:]
         if not self.player_to_move:
             stones_to_play.reverse()
             player_0_locs = [i for i,v in enumerate(board) if v == 1]
@@ -212,12 +211,12 @@ class NineMenGame(Game):
             for x in player_1_locs:
                 board[x] = 1
 
-        best_board = board.copy()
+        best_board = board[:]
         for _1 in range(2):
             for _2 in range(4):
                 self.__rotate_board(board)
                 if board < best_board:
-                    best_board = board.copy()
+                    best_board = board[:]
             self.__flip_board(board)
         return board, stones_to_play
 
@@ -227,6 +226,16 @@ class NineMenGame(Game):
         stones_state = ''.join(str(x) for x in canonical_stones)
         state_string = board_state + stones_state
         state_num = int(state_string)
+        return state_num
+
+    def get_state_num_after_move(self, move):
+        self.take_action(move)
+        canonical_board, canonical_stones = self.get_cannonical_state()
+        board_state = ''.join(str(x) for x in canonical_board)
+        stones_state = ''.join(str(x) for x in canonical_stones)
+        state_string = board_state + stones_state
+        state_num = int(state_string)
+        self.invert_action(move)
         return state_num
 
     def __str__(self):
@@ -278,6 +287,8 @@ class NineMenGame(Game):
         return is_new_line_created
 
     def take_action(self, selected_move):
+        self.player_to_move = self.player_to_move ^ 1
+
         if selected_move.old_pos == -1:
             # Placing a new stone, remove a stone from the store
             self.num_stones_to_play[self.player_to_move] -= 1
@@ -290,6 +301,22 @@ class NineMenGame(Game):
         if selected_move.capture != -1:
             # Capture
             self.board[selected_move.capture] = 0
+
+        return True
+
+    def invert_action(self, selected_move):
+        if selected_move.old_pos == -1:
+            # Placing a new stone, remove a stone from the store
+            self.num_stones_to_play[self.player_to_move] += 1
+        else:
+            # Moving a stone, remove from move origin
+            self.board[selected_move.old_pos] = self.current_player() + 1
+
+        self.board[selected_move.new_pos] = 0
+
+        if selected_move.capture != -1:
+            # Capture
+            self.board[selected_move.capture] = self.__current_opponent() + 1
 
         self.player_to_move = self.player_to_move ^ 1
         return True
