@@ -134,9 +134,7 @@ class NineMenGame(Game):
         for move in valid_moves:
             if self.__is_new_line_created(move, self.player_to_move + 1):
                 for capture in self.__get_stone_locations(self.__current_opponent()):
-                    temp_move = copy.deepcopy(move)
-                    temp_move.capture = capture
-                    valid_moves_with_captures.append(temp_move)
+                    valid_moves_with_captures.append(self.Move(move.old_pos, move.new_pos, capture))
 
             else:
                 valid_moves_with_captures.append(move)
