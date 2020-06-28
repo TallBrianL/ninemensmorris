@@ -226,9 +226,9 @@ class NineMenGame(Game):
         return '\n'.join(output_header + [x + '   ' + y for x, y in zip(output_board, self.board_ref)])
 
     def __find_row_and_col(self, pos):
-        row = ([any([y == pos for y in x]) for x in self.rows]).index(True)
-        col = ([any([y == pos for y in x]) for x in self.cols]).index(True)
-        return row, col
+        rows = [i for i, x in enumerate(self.rows) if pos in x]
+        cols = [i for i, x in enumerate(self.cols) if pos in x]
+        return rows[0], cols[0]
 
     def current_player(self):
         return int(self.player_to_move)

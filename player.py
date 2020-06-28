@@ -56,7 +56,7 @@ class TrainedComputer(Player):
                 modeled_score = self.model[state][0]
             except:
                 modeled_score = .5
-            modeled_score = modeled_score + (random.random() - .5) / 2
+            modeled_score = modeled_score + (random.random() - .5) / 3
             if modeled_score > best_score:
                 best_score = modeled_score
                 best_move = move
