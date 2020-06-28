@@ -18,13 +18,13 @@ class NineMenGame(Game):
         def __eq__(self, other):
             return self.old_pos == other.old_pos and self.new_pos == other.new_pos and self.capture == other.capture
 
-    board_ref = '''A --- B --- C
-                   | D - E - F |
-                   | | G H I | |
-                   J K L   M N O
-                   | | P Q R | |
-                   | S - T - U |
-                   V --- W --- X'''
+    board_ref = ["A --- B --- C",
+                 "| D - E - F |",
+                 "| | G H I | |",
+                 "J K L   M N O",
+                 "| | P Q R | |",
+                 "| S - T - U |",
+                 "V --- W --- X"]
 
     rows = [(0,          1,          2),
                 (3,      4,     5),
@@ -142,12 +142,11 @@ class NineMenGame(Game):
     def get_human_move(self, player_name):
         valid_moves = self.get_valid_moves()
 
+        print(self)
         if self.num_stones_to_play[self.player_to_move]:
             old_pos = -1
-            print(player_name,  ', place a stone on the board (q to quit):', )
-            print(self)
             while True:
-                user_input = input()
+                user_input = input(player_name + ', place a stone on the board (q to quit, r to redo):')
                 if user_input == 'q':
                     sys.exit('User quits')
                 elif len(user_input) == 1:
@@ -157,10 +156,8 @@ class NineMenGame(Game):
                     else:
                         print('invalid move, please try again')
         else:
-            print(player_name,  ', choose a stone to move (q to quit):', )
-            print(self)
             while True:
-                user_input = input()
+                user_input = input(player_name + ', choose a stone to move (q to quit):')
                 if user_input == 'q':
                     sys.exit('User quits')
                 elif len(user_input) == 1:
@@ -169,10 +166,8 @@ class NineMenGame(Game):
                         break
                     else:
                         print('invalid move, please try again')
-            print(player_name,  ', choose where to move selected stone (q to quit):', )
-            print(self)
             while True:
-                user_input = input()
+                user_input = input(player_name + ', choose where to move selected stone (q to quit):')
                 if user_input == 'q':
                     sys.exit('User quits')
                 elif len(user_input) == 1:
@@ -182,10 +177,8 @@ class NineMenGame(Game):
                     else:
                         print('invalid move, please try again')
         if self.__is_new_line_created(self.Move(old_pos, new_pos, -1), self.player_to_move + 1):
-            print(player_name,  ', choose which stone to capture (q to quit):', )
-            print(self)
             while True:
-                user_input = input()
+                user_input = input(player_name + ', choose which stone to capture (q to quit):')
                 if user_input == 'q':
                     sys.exit('User quits')
                 elif len(user_input) == 1:
@@ -240,18 +233,18 @@ class NineMenGame(Game):
 
     def __str__(self):
         letter_board = ['.' if x[1] == 0 else str(x[1]) for x in enumerate(self.board)]
-        output_str = 'It\'s ' + self.players[self.player_to_move].name + '\'s turn to play:\n' + \
-                     self.players[0].name + ' is 1 and has ' + str(self.num_stones_to_play[0]) + ' stones to place\n' + \
-                     self.players[1].name + ' is 2 and has ' + str(self.num_stones_to_play[1]) + ' stones to place\n' + \
-                     letter_board[0] + ' --- ' + letter_board[1] + ' --- ' + letter_board[2] + '\n' + \
-                     '| ' + letter_board[3] + ' - ' + letter_board[4] + ' - ' + letter_board[5] + ' |' + '\n' + \
-                     '| | ' + letter_board[6] + ' ' + letter_board[7] + ' ' + letter_board[8] + ' | |' + '\n' + \
-                     letter_board[9] + ' ' + letter_board[10] + ' ' + letter_board[11] + '   ' + \
-                     letter_board[12] + ' ' + letter_board[13] + ' ' + letter_board[14] + '\n' + \
-                     '| | ' + letter_board[15] + ' ' + letter_board[16] + ' ' + letter_board[17] + ' | |' + '\n' + \
-                     '| ' + letter_board[18] + ' - ' + letter_board[19] + ' - ' + letter_board[20] + ' |' + '\n' + \
-                     letter_board[21] + ' --- ' + letter_board[22] + ' --- ' + letter_board[23]
-        return output_str
+        output_header = ['It\'s ' + self.players[self.player_to_move].name + '\'s turn to play:',
+                         self.players[0].name + ' is 1 and has ' + str(self.num_stones_to_play[0]) + ' stones to place',
+                         self.players[1].name + ' is 2 and has ' + str(self.num_stones_to_play[1]) + ' stones to place']
+        output_board = [letter_board[0] + ' --- ' + letter_board[1] + ' --- ' + letter_board[2],
+                        '| ' + letter_board[3] + ' - ' + letter_board[4] + ' - ' + letter_board[5] + ' |',
+                        '| | ' + letter_board[6] + ' ' + letter_board[7] + ' ' + letter_board[8] + ' | |',
+                        letter_board[9] + ' ' + letter_board[10] + ' ' + letter_board[11] + '   ' + \
+                        letter_board[12] + ' ' + letter_board[13] + ' ' + letter_board[14],
+                        '| | ' + letter_board[15] + ' ' + letter_board[16] + ' ' + letter_board[17] + ' | |',
+                        '| ' + letter_board[18] + ' - ' + letter_board[19] + ' - ' + letter_board[20] + ' |',
+                        letter_board[21] + ' --- ' + letter_board[22] + ' --- ' + letter_board[23]]
+        return '\n'.join(output_header + [x + '   ' + y for x, y in zip(output_board, self.board_ref)])
 
     def __find_row_and_col(self, pos):
         try:
