@@ -190,23 +190,19 @@ class NineMenGame(Game):
                 if board < best_board:
                     best_board = board[:]
             self.__flip_board(board)
-        return board, stones_to_play
+        return best_board, stones_to_play
 
     def get_state_num(self):
         canonical_board, canonical_stones = self.get_canonical_state()
-        board_state = ''.join(str(x) for x in canonical_board)
-        stones_state = ''.join(str(x) for x in canonical_stones)
-        state_string = board_state + stones_state
-        state_num = int(state_string)
+        board_state = sum([x*y for x, y in zip(canonical_board, self.POWERS_OF_3)])
+        state_num = board_state * 100 + canonical_stones[0] * 10 + canonical_stones[1]
         return state_num
+
+    POWERS_OF_3 = [3**(23 - i) for i in range(24)]
 
     def get_state_num_after_move(self, move):
         self.take_action(move)
-        canonical_board, canonical_stones = self.get_canonical_state()
-        board_state = ''.join(str(x) for x in canonical_board)
-        stones_state = ''.join(str(x) for x in canonical_stones)
-        state_string = board_state + stones_state
-        state_num = int(state_string)
+        state_num = self.get_state_num()
         self.invert_action(move)
         return state_num
 
