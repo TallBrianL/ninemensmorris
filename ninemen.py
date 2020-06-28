@@ -192,16 +192,14 @@ class NineMenGame(Game):
 
         return self.Move(old_pos, new_pos, capture)
 
-    def get_cannonical_state(self):
+    def get_canonical_state(self):
         stones_to_play = self.num_stones_to_play[:]
         board = self.board[:]
         if not self.player_to_move:
             stones_to_play.reverse()
-            player_0_locs = [i for i,v in enumerate(board) if v == 1]
-            player_1_locs = [i for i,v in enumerate(board) if v == 2]
-            for x in player_0_locs:
+            for x in [i for i, v in enumerate(board) if v == 1]:
                 board[x] = 2
-            for x in player_1_locs:
+            for x in [i for i, v in enumerate(board) if v == 2]:
                 board[x] = 1
 
         best_board = board[:]
@@ -214,7 +212,7 @@ class NineMenGame(Game):
         return board, stones_to_play
 
     def get_state_num(self):
-        canonical_board, canonical_stones = self.get_cannonical_state()
+        canonical_board, canonical_stones = self.get_canonical_state()
         board_state = ''.join(str(x) for x in canonical_board)
         stones_state = ''.join(str(x) for x in canonical_stones)
         state_string = board_state + stones_state
@@ -223,7 +221,7 @@ class NineMenGame(Game):
 
     def get_state_num_after_move(self, move):
         self.take_action(move)
-        canonical_board, canonical_stones = self.get_cannonical_state()
+        canonical_board, canonical_stones = self.get_canonical_state()
         board_state = ''.join(str(x) for x in canonical_board)
         stones_state = ''.join(str(x) for x in canonical_stones)
         state_string = board_state + stones_state
@@ -239,7 +237,7 @@ class NineMenGame(Game):
         output_board = [letter_board[0] + ' --- ' + letter_board[1] + ' --- ' + letter_board[2],
                         '| ' + letter_board[3] + ' - ' + letter_board[4] + ' - ' + letter_board[5] + ' |',
                         '| | ' + letter_board[6] + ' ' + letter_board[7] + ' ' + letter_board[8] + ' | |',
-                        letter_board[9] + ' ' + letter_board[10] + ' ' + letter_board[11] + '   ' + \
+                        letter_board[9] + ' ' + letter_board[10] + ' ' + letter_board[11] + '   ' +
                         letter_board[12] + ' ' + letter_board[13] + ' ' + letter_board[14],
                         '| | ' + letter_board[15] + ' ' + letter_board[16] + ' ' + letter_board[17] + ' | |',
                         '| ' + letter_board[18] + ' - ' + letter_board[19] + ' - ' + letter_board[20] + ' |',
@@ -247,12 +245,8 @@ class NineMenGame(Game):
         return '\n'.join(output_header + [x + '   ' + y for x, y in zip(output_board, self.board_ref)])
 
     def __find_row_and_col(self, pos):
-        try:
-            row = ([any([y == pos for y in x]) for x in self.rows]).index(True)
-            col = ([any([y == pos for y in x]) for x in self.cols]).index(True)
-        except:
-            print('hello', row)
-
+        row = ([any([y == pos for y in x]) for x in self.rows]).index(True)
+        col = ([any([y == pos for y in x]) for x in self.cols]).index(True)
         return row, col
 
     def current_player(self):
