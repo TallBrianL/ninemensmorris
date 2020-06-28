@@ -103,12 +103,22 @@ class NineMenGame(Game):
         valid_moves_with_captures = list()
         for move in valid_moves:
             if self.__is_new_line_created(move, self.player_to_move + 1):
-                for capture in self.__get_stone_locations(self.__current_opponent()):
+                for capture in self.__get_capturable_stones():
                     valid_moves_with_captures.append(self.Move(move.old_pos, move.new_pos, capture))
-
             else:
                 valid_moves_with_captures.append(move)
         return valid_moves_with_captures
+
+    def __get_capturable_stones(self):
+        captures_not_in_mill = list()
+        for capture in self.__get_stone_locations(self.__current_opponent()):
+            row, col = self.__find_row_and_col(capture)
+            is_in_mill = self.__is_triple_match(self.rows[row]) or self.__is_triple_match(self.cols[col])
+            if not is_in_mill:
+                captures_not_in_mill.append(capture)
+        if not captures_not_in_mill:
+            captures_not_in_mill = self.__get_stone_locations(self.__current_opponent())
+        return captures_not_in_mill
 
     def get_human_move(self, player_name):
         valid_moves = self.get_valid_moves()
