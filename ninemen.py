@@ -65,41 +65,12 @@ class NineMenGame(Game):
 
     @staticmethod
     def __rotate_board(board):
-        temp = board[0]
-        board[0] = board[21]
-        board[21] = board[23]
-        board[23] = board[2]
-        board[2] = temp
-
-        temp = board[1]
-        board[1] = board[9]
-        board[9] = board[22]
-        board[22] = board[14]
-        board[14] = temp
-
-        temp = board[3]
-        board[3] = board[18]
-        board[18] = board[20]
-        board[20] = board[5]
-        board[5] = temp
-
-        temp = board[4]
-        board[4] = board[10]
-        board[10] = board[19]
-        board[19] = board[13]
-        board[13] = temp
-
-        temp = board[6]
-        board[6] = board[15]
-        board[15] = board[17]
-        board[17] = board[8]
-        board[8] = temp
-
-        temp = board[7]
-        board[7] = board[11]
-        board[11] = board[16]
-        board[12] = board[7]
-        board[16] = temp
+        board[0], board[21], board[23], board[2] = board[21], board[23], board[2], board[0]
+        board[1], board[9], board[22], board[14] = board[9], board[22], board[14], board[1]
+        board[3], board[18], board[20], board[5] = board[18], board[20], board[5], board[3]
+        board[4], board[10], board[19], board[13] = board[10], board[19], board[13], board[4]
+        board[6], board[15], board[17], board[8] = board[15], board[17], board[8], board[6]
+        board[7], board[11], board[16], board[12] = board[11], board[16], board[12], board[7]
 
     def is_game_over(self):
         if self.__has_less_than_3_stones():
