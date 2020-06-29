@@ -196,7 +196,7 @@ class NineMenGame(Game):
         canonical_board, canonical_stones = self.get_canonical_state()
         board_state = sum([x*y for x, y in zip(canonical_board, self.POWERS_OF_3)])
         state_num = board_state * 100 + canonical_stones[0] * 10 + canonical_stones[1]
-        return state_num
+        return [state_num, self.player_to_move]
 
     POWERS_OF_3 = [3**(23 - i) for i in range(24)]
 

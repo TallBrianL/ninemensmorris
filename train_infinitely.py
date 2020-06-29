@@ -14,6 +14,7 @@ def train_infinitely(total_iteration_target):
     save_file = "save.p"
     print("Let's Play")
     try:
+        # prediction is chances the player whose turn it is will win
         prediction = pickle.load(open(save_file, "rb"))
         print('model loaded', end=" ")
     except:
@@ -29,15 +30,15 @@ def train_infinitely(total_iteration_target):
         print('playing games')
         for _ in tqdm(range(iterations_per_cycle)):
             game_instance = ninemen.NineMenGame(player1, player2)
-            winner, state_list = game_instance.play_game()
-            winner_sum += winner
-            for state in state_list:
+            winner_idx, state_list = game_instance.play_game()
+            winner_sum += winner_idx
+            for state, active_player in state_list:
+                score = int(winner_idx == active_player)
                 if state in prediction:
                     val, count = prediction[state]
-                    prediction[state] = (val * count + winner) / (count + 1), count + 1
+                    prediction[state] = (val * count + score) / (count + 1), count + 1
                 else:
-                    prediction[state] = (winner, 1)
-                winner = winner ^ 1
+                    prediction[state] = (score, 1)
             total_iteration_count += 1
         print("winner ", str(winner_sum / iterations_per_cycle), " in ", str(len(state_list)), " moves; pickling...",
               end="")
