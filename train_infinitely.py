@@ -15,7 +15,7 @@ def train_infinitely(total_iteration_target):
     print("Let's Play")
     try:
         prediction = pickle.load(open(save_file, "rb"))
-        print('model loaded')
+        print('model loaded', end=" ")
     except:
         print('cannot open', save_file)
         print('creating a new prediction dictionary')
@@ -24,7 +24,7 @@ def train_infinitely(total_iteration_target):
         batch_time = time.time()
         player1 = player.TrainedComputer('Brian', prediction)
         player2 = player.TrainedComputer('Dani', prediction)
-        print('players loaded')
+        print('players loaded', end=" ")
         winner_sum = 0
         print('playing games')
         for _ in tqdm(range(iterations_per_cycle)):
@@ -39,10 +39,11 @@ def train_infinitely(total_iteration_target):
                     prediction[state] = (winner, 1)
                 winner = winner ^ 1
             total_iteration_count += 1
-        print("winner ", str(winner_sum / iterations_per_cycle), " in ", str(len(state_list)), " moves; pickling...")
+        print("winner ", str(winner_sum / iterations_per_cycle), " in ", str(len(state_list)), " moves; pickling...",
+              end="")
         pickle.dump(prediction, open(save_file, "wb"))
-        print("...pickled", save_file, os.stat(save_file).st_size / 1e6, "MB")
-        print(round(time.time() - start_time), "seconds", round(time.time() - batch_time), "seconds")
+        print("pickled", save_file, os.stat(save_file).st_size / 1e6, "MB",
+              round(time.time() - start_time), "seconds", round(time.time() - batch_time), "seconds")
 
 
 if __name__ == "__main__":
