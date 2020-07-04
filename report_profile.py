@@ -1,11 +1,11 @@
 import cProfile
-import train_infinitely
+import train_state_dictionary
 
 
 pr = cProfile.Profile()
 pr.enable()
 
-train_infinitely.train_infinitely(200)
+train_state_dictionary.train_infinitely(2000)
 
 pr.disable()
 

@@ -23,8 +23,8 @@ def train_infinitely(total_iteration_target):
         prediction = dict()
     while total_iteration_count < total_iteration_target:
         batch_time = time.time()
-        player1 = player.TrainedComputer('Brian', prediction)
-        player2 = player.TrainedComputer('Dani', prediction)
+        player1 = player.TrainedComputer('Dani', prediction)
+        player2 = player.RandomComputer('Brian')
         print('players loaded', end=" ")
         winner_sum = 0
         print('playing games')
