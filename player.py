@@ -1,5 +1,6 @@
 import random
-import copy
+import math
+
 
 class Player:
     def __init__(self, name):
@@ -42,22 +43,24 @@ class PickFirstMoveComputer(Player):
 
 
 class TrainedComputer(Player):
-    def __init__(self, name, model):
+    def __init__(self, name, model, iter):
         self.model = model
+        self.iter = iter
         Player.__init__(self, name)
 
     def select_move(self, game):
         valid_moves = game.get_valid_moves()
-        best_score = 0
+        best_score = 1
         best_move = valid_moves[0]
         for move in valid_moves:
             state = game.get_state_num_after_move(move)
             try:
-                modeled_score = self.model[state][0]
+                modeled_score = abs(self.model[state[0]][0])
             except:
                 modeled_score = .5
-            modeled_score = modeled_score + (random.random() - .5) / 3
-            if modeled_score > best_score:
+            modeled_score = modeled_score + (random.random() - .5) * \
+                            (math.pi/2 - math.atan(sum([y for x,y in self.model.values()]) / 1000))
+            if modeled_score < best_score:
                 best_score = modeled_score
                 best_move = move
         return best_move
