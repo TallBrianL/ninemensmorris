@@ -3,7 +3,8 @@ import pickle
 import time
 import os
 from tqdm import tqdm
-
+from ninemen import NineMenGame
+from tictactoe import TicTacToe
 
 def train_infinitely(game, total_iteration_target):
     total_iteration_count = 0
@@ -21,7 +22,7 @@ def train_infinitely(game, total_iteration_target):
     while total_iteration_count < total_iteration_target:
         batch_time = time.time()
         player1 = player.TrainedComputer('Dani', prediction, total_iteration_count)
-        player2 = player.TrainedComputer('Brian', prediction, total_iteration_count)
+        player2 = player.RandomComputer('Brian')
         iterations_per_cycle = 1000
         if 0:
             player1 = player.Human('Dani')
@@ -58,4 +59,6 @@ def train_infinitely(game, total_iteration_target):
 
 
 if __name__ == "__main__":
-    train_infinitely(float('inf'))
+    game1 = tictactoe.TicTacToe
+    game2 = ninemen.NineMenGame
+    train_infinitely(float('inf', game2))
