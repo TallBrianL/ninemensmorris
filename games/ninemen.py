@@ -3,6 +3,8 @@ import sys
 
 
 class NineMenGame(Game):
+    game_name = "Nine Men's Morris"
+
     class Move:
         def __init__(self, old_pos, new_pos, capture):
             self.old_pos = old_pos
