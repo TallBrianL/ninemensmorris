@@ -61,4 +61,4 @@ def train_infinitely(game, total_iteration_target):
 if __name__ == "__main__":
     game1 = TicTacToe
     game2 = NineMenGame
-    train_infinitely(float('inf'), game2)
+    train_infinitely(game2, float('inf'))
