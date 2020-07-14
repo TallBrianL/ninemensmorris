@@ -3,8 +3,8 @@ import pickle
 import time
 import os
 from tqdm import tqdm
-from ninemen import NineMenGame
-from tictactoe import TicTacToe
+from games.ninemen import NineMenGame
+from games.tictactoe import TicTacToe
 
 def train_infinitely(game, total_iteration_target):
     total_iteration_count = 0
@@ -59,6 +59,6 @@ def train_infinitely(game, total_iteration_target):
 
 
 if __name__ == "__main__":
-    game1 = tictactoe.TicTacToe
-    game2 = ninemen.NineMenGame
+    game1 = TicTacToe
+    game2 = NineMenGame
     train_infinitely(float('inf', game2))
