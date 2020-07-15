@@ -43,9 +43,9 @@ class PickFirstMoveComputer(Player):
 
 
 class TrainedComputer(Player):
-    def __init__(self, name, model, iter):
+    def __init__(self, name, model, randomness):
         self.model = model
-        self.iter = iter
+        self.randomness = randomness
         Player.__init__(self, name)
 
     def select_move(self, game):
@@ -58,8 +58,8 @@ class TrainedComputer(Player):
                 modeled_score = abs(self.model[state[0]][0])
             except:
                 modeled_score = .5
-            modeled_score = modeled_score + (random.random() - .5) * \
-                            (math.pi/2 - math.atan(sum([y for x,y in self.model.values()]) / 1000))
+            modeled_score = modeled_score + \
+                            (random.random() - .5) / .5 * self.randomness
             if modeled_score < best_score:
                 best_score = modeled_score
                 best_move = move

@@ -21,13 +21,9 @@ def train_infinitely(game, total_iteration_target):
         prediction = dict()
     while total_iteration_count < total_iteration_target:
         batch_time = time.time()
-        player1 = player.TrainedComputer('Dani', prediction, total_iteration_count)
-        player2 = player.RandomComputer('Brian')
-        iterations_per_cycle = 1000
-        if 0:
-            player1 = player.Human('Dani')
-            player2 = player.Human('Brian')
-            iterations_per_cycle = 1
+        player1 = player.TrainedComputer('Dani', prediction, .4)
+        player2 = player.TrainedComputer('Brian', prediction, .6)
+        iterations_per_cycle = 40
         print('players loaded', end=" ")
         winner_sum = 0
         winner_tally = {0:0, 1:0, .5:0}
@@ -48,7 +44,6 @@ def train_infinitely(game, total_iteration_target):
                 else:
                     prediction[state] = (score, 1)
             total_iteration_count += 1
-        time.sleep(0.1)
         print("winner tally", winner_tally, end=" ")
         p = [x for x, y in prediction.values()]
         print([len([x for x in p if y[0] < x < y[1]]) for y in [(0, 1 / 3), (1 / 3, 2 / 3), (2 / 3, 1)]])
